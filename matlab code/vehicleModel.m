@@ -69,8 +69,8 @@ classdef vehicleModel < handle
         
         %CurrentPose Current pose of the robot
         CurrentPose;
-        vel = 0;
-        acc = 0;
+        vel = 5;%initial velocity
+        acc = 0;%initial acceleration
         role = 'leader';
         status = 'moveandwait';%'stopandwait','crossing','done'
         color = 'b';
@@ -273,7 +273,9 @@ classdef vehicleModel < handle
                 obj.HRobot = plot(x,y, obj.color, 'Parent', ax);
                 
                 if(obj.mynumber==1 && obj.seeInfo==1)
-                obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%.0fml',obj.fuelConsumed),'FontSize',8,'FontWeight','bold');
+                %obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%.0fml',obj.fuelConsumed),'FontSize',8,'FontWeight','bold');
+                obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%d',obj.pNumber),'FontSize',8,'FontWeight','bold');
+
                 end
                 
                 % Draw heading vector
@@ -612,7 +614,9 @@ classdef vehicleModel < handle
                 obj.HRobot.YData =  robotYData;
                 if(obj.mynumber==1 && obj.seeInfo ==1)
                 delete(obj.showNumber);
-                obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%.0fml',obj.fuelConsumed),'FontSize',8,'FontWeight','bold');
+                %obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%.0fml',obj.fuelConsumed),'FontSize',8,'FontWeight','bold');
+                obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%d',obj.pNumber),'FontSize',8,'FontWeight','bold');
+
                 end
             end
             function updateRobotTrail(obj)

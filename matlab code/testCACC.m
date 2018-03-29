@@ -98,6 +98,7 @@ drawnow
 %pause(0.01)
 end
 uniqueNumber = num2str(100);
+uniqueNumber = 111;
 video = VideoWriter(strcat('Platooning-Test',uniqueNumber),'MPEG-4');
 video.FrameRate = 20;
 open(video);

@@ -140,7 +140,7 @@ while(frameCounter<duration*fps)
     set(handles.timeLabel,'String',formattedTime);
     set(handles.crossedVehicles,'String',sprintf('%d',sum(totalVehiclesCrossed)));
     set(handles.intersectionFlow,'String',sprintf('%.0f',sum(totalVehiclesCrossed)*3600/secondsPassed));
-    if(mod(frameCounter,1)==0)%Spawn 4 platoons every 100 frames
+    if(mod(frameCounter,10)==0)%Spawn 4 platoons every 100 frames
         for k=1:4
             %Spawn New Platoons
             %decide lane
@@ -151,7 +151,7 @@ while(frameCounter<duration*fps)
                 %Major Road:50% go straight, 25% turn left, 25% turn Right
                 if(turnRand<0.5)
                     turnDecision = turns{1};%Go Straight
-                elseif(turnRand>=0.5 && turnRand<0.7)
+                elseif(turnRand>=0.5 && turnRand<0.6)
                     turnDecision = turns{2};%Turn Left
                 else
                     turnDecision = turns{3};%Turn Right
@@ -161,7 +161,7 @@ while(frameCounter<duration*fps)
                 %Minor Road: 20% go straight, 40% turn left, 40% turn Right
                 if(turnRand<0.50)
                     turnDecision = turns{1};%Go Straight
-                elseif(turnRand>=0.5 && turnRand<0.7)
+                elseif(turnRand>=0.5 && turnRand<0.6)
                     turnDecision = turns{2};%Turn Left
                 else
                     turnDecision = turns{3};%Turn Right
@@ -240,7 +240,7 @@ while(frameCounter<duration*fps)
             end
         end
         
-        schedule2 = sortrows(waitings,[2]);
+        schedule2 = sortrows(waitings,[2]);%sort on  platoon number
         sortedList = [schedule2(:,1)'];
         
         %temp code
@@ -266,7 +266,7 @@ while(frameCounter<duration*fps)
                     %             end
                     if(candidates(lane)==0 && (strcmp(platoons(pt).state,'stopandwait')||...
                             strcmp(platoons(pt).state,'moveandwait'))...
-                            && (platoons(pt).arrivalTime)<=clearTime)% && platoons(pt).reachedCollisionZone==1)
+                            && (platoons(pt).arrivalTime)<=clearTime && platoons(pt).reachedCollisionZone==1)
                         candidates(lane)=pt;
                         platoons(pt).color = 'y';
                         candidateCounter = candidateCounter+1;

@@ -1,6 +1,9 @@
 function [F,callCounter,packets,var,AverageDelayPerVehicle,AverageDelayPerPlatoon,totalVehicles,totalVehiclesCrossed] = TL(policyName,ver,seed,granularity,platoonMaxSize,spawnRate,duration,simSpeed,handles)
 tic;
-F = [];
+makeVideo=1;
+if(makeVideo==0)
+    F=[];
+end
 offset = [-10 0 0;0 -10 0;10 0 0;0 10 0];
 offset_offset = [-10 0 0;0 -10 0;10 0 0;0 10 0];
 rng(seed);
@@ -61,7 +64,11 @@ numOfLanes = 4;
 frameCounter = 1;
 coplatoons = [];
 %F(frameCounter) = getframe(gcf);
+if(makeVideo)
+F(frameCounter) = getframe(gcf);
+else
 getframe(gcf);
+end
 %legend('Vehicle');
 %stoppedByUser=0;
 tic;
@@ -180,7 +187,11 @@ while(frameCounter<duration*fps)
         frameCounter = frameCounter+1;
         lastFrame = frameCounter;
         %F(frameCounter) = getframe(gcf);
+        if(makeVideo)
+        F(frameCounter) = getframe(gcf);
+        else
         getframe(gcf);
+        end
         continue;
     else
         for j=indices
@@ -406,7 +417,11 @@ while(frameCounter<duration*fps)
         %platoonSizeSetting = platoonMaxSize
         %SimulationTime = frameCounter/2
         %F(frameCounter) = getframe(gcf);
-        getframe(gcf);
+        if(makeVideo)
+        F(frameCounter) = getframe(gcf);
+        else
+            getframe(gcf);
+        end
         %tic;
         %pause(0.01);
         %times = [times toc-elapsedTime];

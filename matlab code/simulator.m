@@ -1,7 +1,7 @@
 function varargout = simulator(varargin)
 % SIMULATOR MATLAB code for simulator.fig
-%% 
-%% 
+%%
+%%
 %      SIMULATOR, by itself, creates a new SIMULATOR or raises the existing
 %      singleton*.
 %
@@ -29,11 +29,11 @@ function varargout = simulator(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @simulator_OpeningFcn, ...
-                   'gui_OutputFcn',  @simulator_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @simulator_OpeningFcn, ...
+    'gui_OutputFcn',  @simulator_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -85,7 +85,7 @@ set(handles.savevideo,'Enable','off');
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = simulator_OutputFcn(hObject, eventdata, handles) 
+function varargout = simulator_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -119,40 +119,40 @@ seed = 154;
 if(policyNumber==1)
     [handles.F,p,var,vDelay,pDelay,tv,tvc] = AIM(seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
 elseif(policyNumber==2)
-%     [handles.Fcc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal(1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
-%     vDelay
-%     var
-%     cc
+    %     [handles.Fcc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal(1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
+    %     vDelay
+    %     var
+    %     cc
     [handles.F,cc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal('pdm',2,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
     vDelay
     var
     cc
-    elseif(policyNumber==3)
-%     [handles.Fcc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal(1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
-%     vDelay
-%     var
-%     cc
+elseif(policyNumber==3)
+    %     [handles.Fcc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal(1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
+    %     vDelay
+    %     var
+    %     cc
     [handles.F,cc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal('pvm',2,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
     vDelay
     var
     cc
-    elseif(policyNumber==4)
-%     [handles.Fcc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal(1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
-%     vDelay
-%     var
-%     cc
-fprintf('running the grouped policy....\n');
-    [fcpv,handles.F,cc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal2('pvm',1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
-%     vDelay
-%     var
-%     cc
+elseif(policyNumber==4)
+    %     [handles.Fcc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal(1,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
+    %     vDelay
+    %     var
+    %     cc
+    fprintf('running the grouped policy....\n');
+    [fcpv,handles.F,cc,p,var,vDelay,pDelay,tv,tvc] = AIM_Optimal2('pvm',2,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
+    %     vDelay
+    %     var
+    %     cc
 elseif(policyNumber==5)
-
-fprintf('running the Traffic Light policy....\n');
+    
+    fprintf('running the Traffic Light policy....\n');
     [fcpv,handles.F,cc,p,var,vDelay,pDelay,tv,tvc] = trafficLight('pvm',2,seed,g,maxSize,handles.spawnRate,handles.simTime,handles.simSpeed,handles);
-%     vDelay
-%     var
-%     cc
+    %     vDelay
+    %     var
+    %     cc
 end
 fprintf('The Average Delay per Vehicle is %f\n', vDelay)
 
@@ -286,7 +286,7 @@ pause(0.5);
 policyNumber = get(handles.policy,'Value');
 uniqueNumber = num2str(randi([0 100])*100+policyNumber);
 video = VideoWriter(strcat('AIM-Demo-',uniqueNumber),'MPEG-4');
-video.FrameRate = 50;
+video.FrameRate = 25;
 open(video);
 writeVideo(video,handles.F);
 close(video);
@@ -418,28 +418,28 @@ function experiment_Callback(hObject, eventdata, handles)
 % hObject    handle to experiment (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    handles.simTime = round(get(handles.duration,'Value'));
-    handles.simSpeed = round(get(handles.simulationSpeed,'Value'));
-    handles.spawnRate = round(get(handles.spawn,'Value'));
-    axes(handles.axes1);
-    g = 400;
-    contents = str2double(get(handles.platoonSize,'String'));
-    maxSize= contents(get(handles.platoonSize,'Value'));
-    set(handles.resetbutton,'Enable','on');
-    set(handles.savevideo,'Enable','off');
-    set(handles.start,'Enable','off');
-    set(handles.status, 'BackgroundColor',handles.runningColor);
-    set(handles.status, 'String','Simulation is Running');
-    policyNumber = get(handles.policy,'Value');
-    totalVehicles = 0;
-    totalVehiclesCrossed = 0;
-    trafficFlows = [];
-    counter=0;
-    seed = 1234;
-    for j = 500:100:1500
-        trafficFlows = [trafficFlows j];
-        counter = counter+1;
-        n_exp = 1;
+handles.simTime = round(get(handles.duration,'Value'));
+handles.simSpeed = round(get(handles.simulationSpeed,'Value'));
+handles.spawnRate = round(get(handles.spawn,'Value'));
+axes(handles.axes1);
+g = 400;
+contents = str2double(get(handles.platoonSize,'String'));
+maxSize= contents(get(handles.platoonSize,'Value'));
+set(handles.resetbutton,'Enable','on');
+set(handles.savevideo,'Enable','off');
+set(handles.start,'Enable','off');
+set(handles.status, 'BackgroundColor',handles.runningColor);
+set(handles.status, 'String','Simulation is Running');
+policyNumber = get(handles.policy,'Value');
+totalVehicles = 0;
+totalVehiclesCrossed = 0;
+trafficFlows = [];
+counter=0;
+seed = 1234;
+for j = 500:100:1500
+    trafficFlows = [trafficFlows j];
+    counter = counter+1;
+    n_exp = 1;
     for i=1:8
         seed = 1234;
         if(policyNumber==1)
@@ -450,7 +450,7 @@ function experiment_Callback(hObject, eventdata, handles)
             fprintf('Max_Platoon = %d, Traffic Level = %d\n',i,j);
             for n=1:n_exp
                 seed = seed+n;
-                [p(n),v(n),vDelay(n),pDelay(n),tv,tvc] = AIM(seed,g,i,j,handles.simTime,handles.simSpeed,handles);  
+                [p(n),v(n),vDelay(n),pDelay(n),tv,tvc] = AIM(seed,g,i,j,handles.simTime,handles.simSpeed,handles);
                 fprintf('Experiment #%d\n',n);
                 Average_Delay_Per_Vehicle = vDelay(n)
                 cla
@@ -474,7 +474,7 @@ function experiment_Callback(hObject, eventdata, handles)
         %packets
         
     end
-    end
+end
 figure
 plot(trafficFlows,AverageDelayPerVehicle(1,:),'color','r','marker','o','lineStyle','--','lineWidth',1);
 hold on
@@ -573,87 +573,144 @@ function pushbutton6_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    handles.simTime = round(get(handles.duration,'Value'));
-    handles.simSpeed = round(get(handles.simulationSpeed,'Value'));
-    handles.spawnRate = round(get(handles.spawn,'Value'));
-    axes(handles.axes1);
-    g = 400;
-    contents = str2double(get(handles.platoonSize,'String'));
-    maxSize= contents(get(handles.platoonSize,'Value'));
-    set(handles.resetbutton,'Enable','on');
-    set(handles.savevideo,'Enable','off');
-    set(handles.start,'Enable','off');
-    set(handles.status, 'BackgroundColor',handles.runningColor);
-    set(handles.status, 'String','Simulation is Running');
-    policyNumber = get(handles.policy,'Value');
-    totalVehicles = 0;
-    totalVehiclesCrossed = 0;
-    trafficFlows = [];
+handles.simTime = round(get(handles.duration,'Value'));
+handles.simSpeed = round(get(handles.simulationSpeed,'Value'));
+handles.spawnRate = round(get(handles.spawn,'Value'));
+axes(handles.axes1);
+g = 400;
+contents = str2double(get(handles.platoonSize,'String'));
+maxSize= contents(get(handles.platoonSize,'Value'));
+set(handles.resetbutton,'Enable','on');
+set(handles.savevideo,'Enable','off');
+set(handles.start,'Enable','off');
+set(handles.status, 'BackgroundColor',handles.runningColor);
+set(handles.status, 'String','Simulation is Running');
+policyNumber = get(handles.policy,'Value');
+totalVehicles = 0;
+totalVehiclesCrossed = 0;
+trafficFlows = [];
+counter=0;
+seed = 154;
+callCounter=[];
+%for kk =1:6
+%   seed = 1233+kk;
+F=[];
+ver=2;
+capacities = [];
+fcpv=zeros(3,3);
+expCounter = 0;
+trafficFlows = [300 900 1500];
+
+for maxSize=1:4
     counter=0;
-    seed = 154;
-    callCounter=[];
-    %for kk =1:6
-     %   seed = 1233+kk;
-    F=[];
-    ver=2;
-    capacities = [];
-    fcpv=zeros(2,3);
-    
-    for j = [300 900 1500]
-            %seed = seed + 1;
-            trafficFlows = [trafficFlows j];
-            counter = counter+1;
-            [fcpv(1,counter),F,callCounter(1,counter),p,var(1,counter),vDelay,pDelay,tv,tvc] = trafficLight('pvm',2,seed,g,1,j,handles.simTime,handles.simSpeed,handles);
-            
-            packets(1,counter) = p;
-            AverageDelayPerVehicle(1,counter) = vDelay;
-            AverageDelayPerPlatoon(1,counter) = pDelay;
-            fprintf("TrafficLight Lane Traffic in %d seconds = [%d,%d,%d,%d]\n",handles.simTime,tvc);
-            tv_sum = sum(tv);
-            tvc_sum = sum(tvc);
-            capacities(1,counter) = tvc_sum*3600/handles.simTime;
-            fprintf("Capacity = %.0fveh/h\n",capacities(1,counter));
-            fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(1,counter));
-            cla
-            [fcpv(2,counter),F,callCounter(2,counter),p,var(2,counter),vDelay,pDelay,tv,tvc] = AIM_Optimal2('pvm',2,seed,g,maxSize,j,handles.simTime,handles.simSpeed,handles);
-            packets(2,counter)=p;
-            AverageDelayPerVehicle(2,counter) = vDelay;
-            AverageDelayPerPlatoon(2,counter) = pDelay;
-            fprintf("Grouped-PAIM Lane Traffic in %d seconds = [%d,%d,%d,%d]\n",handles.simTime,tvc);
-            tv_sum = sum(tv);
-            tvc_sum = sum(tvc);
-            capacities(2,counter) = tvc_sum*3600/handles.simTime;
-            fprintf("Capacity = %.0fveh/h\n",capacities(2,counter));
-            fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(2,counter));
-
-            cla
-    
+    for j = [300 900 1500]%low, medium and high traffic flow
+        %seed = seed + 1;
+        %expCounter = expCounter+1;
+        %trafficFlows = [trafficFlows j];
+        counter = counter+1;
+        [fcpv(expCounter+1,counter),F,callCounter(expCounter+1,counter),p,var(expCounter+1,counter),vDelay,pDelay,tv,tvc] = trafficLight('pvm',2,seed,g,maxSize,j,handles.simTime,handles.simSpeed,handles);
+        %[fcpv(expCounter+1,counter),F,callCounter(expCounter+1,counter),p,var(expCounter+1,counter),vDelay,pDelay,tv,tvc] = AIM_Optimal2('pdm',2,seed,g,maxSize,j,handles.simTime,handles.simSpeed,handles);
+        packets(expCounter+1,counter) = p;
+        AverageDelayPerVehicle(expCounter+1,counter) = vDelay;
+        AverageDelayPerPlatoon(expCounter+1,counter) = pDelay;
+        fprintf("TrafficLight Lane Traffic in %d seconds = [%d,%d,%d,%d]\n",handles.simTime,tvc);
+        tv_sum = sum(tv);
+        tvc_sum = sum(tvc);
+        capacities(expCounter+1,counter) = tvc_sum*3600/handles.simTime;
+        fprintf("Capacity = %.0fveh/h\n",capacities(expCounter+1,counter));
+        fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+1,counter));
+        fprintf("AverageDelayPerVehicle = %.0fs\n",vDelay);
+        cla
+        [fcpv(expCounter+2,counter),F,callCounter(expCounter+2,counter),p,var(expCounter+2,counter),vDelay,pDelay,tv,tvc] = AIM_Optimal2('pvm',2,seed,g,maxSize,j,handles.simTime,handles.simSpeed,handles);
+        packets(expCounter+2,counter)=p;
+        AverageDelayPerVehicle(expCounter+2,counter) = vDelay;
+        AverageDelayPerPlatoon(expCounter+2,counter) = pDelay;
+        fprintf("Grouped-PVM Lane Traffic in %d seconds = [%d,%d,%d,%d]\n",handles.simTime,tvc);
+        tv_sum = sum(tv);
+        tvc_sum = sum(tvc);
+        capacities(expCounter+2,counter) = tvc_sum*3600/handles.simTime;
+        fprintf("Capacity = %.0fveh/h\n",capacities(expCounter+2,counter));
+        fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+2,counter));
+        fprintf("AverageDelayPerVehicle = %.0fs\n",vDelay);
+        
+        cla
+        [fcpv(expCounter+3,counter),F,callCounter(expCounter+3,counter),p,var(expCounter+3,counter),vDelay,pDelay,tv,tvc] = AIM_Optimal2('pdm',2,seed,g,maxSize,j,handles.simTime,handles.simSpeed,handles);
+        packets(expCounter+3,counter)=p;
+        AverageDelayPerVehicle(expCounter+3,counter) = vDelay;
+        AverageDelayPerPlatoon(expCounter+3,counter) = pDelay;
+        fprintf("Grouped-PDM Lane Traffic in %d seconds = [%d,%d,%d,%d]\n",handles.simTime,tvc);
+        tv_sum = sum(tv);
+        tvc_sum = sum(tvc);
+        capacities(expCounter+3,counter) = tvc_sum*3600/handles.simTime;
+        fprintf("Capacity = %.0fveh/h\n",capacities(expCounter+3,counter));
+        fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+3,counter));
+        fprintf("AverageDelayPerVehicle = %.0fs\n",vDelay);
+        
+        cla
+        
     end
-    %end
+        expCounter = expCounter+3;
+end
 figure
-plot(trafficFlows,AverageDelayPerVehicle(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+for plt=1:12
+plot(trafficFlows,AverageDelayPerVehicle(plt,:),'color','k','marker','d','lineStyle','-','lineWidth',1);
 hold on
-plot(trafficFlows,AverageDelayPerVehicle(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
+end
+% plot(trafficFlows,AverageDelayPerVehicle(2,:),'color','k','marker','o','lineStyle','-','lineWidth',1);
+% hold on
+% plot(trafficFlows,AverageDelayPerVehicle(3,:),'color','r','marker','d','lineStyle','-','lineWidth',1);
+% hold on
+% plot(trafficFlows,AverageDelayPerVehicle(4,:),'color','r','marker','o','lineStyle','-','lineWidth',1);
+% hold on
+% plot(trafficFlows,AverageDelayPerVehicle(5,:),'color','c','marker','d','lineStyle','-','lineWidth',1);
+% hold on
+% plot(trafficFlows,AverageDelayPerVehicle(6,:),'color','c','marker','o','lineStyle','-','lineWidth',1);
+% hold on
+% plot(trafficFlows,AverageDelayPerVehicle(7,:),'color','g','marker','d','lineStyle','-','lineWidth',1);
+% hold on
+% plot(trafficFlows,AverageDelayPerVehicle(8,:),'color','g','marker','o','lineStyle','-','lineWidth',1);
 
-legend('Policy = TL','Policy = PAIM');
+legend('Policy = TL-MaxSize=1','Policy = PVM-MaxSize=1','Policy = PDM-MaxSize=1'...
+    ,'Policy = TL-MaxSize=2','Policy = PVM-MaxSize=2','Policy = PDM-MaxSize=2'...
+    ,'Policy = TL-MaxSize=3','Policy = PVM-MaxSize=3','Policy = PDM-MaxSize=3'...
+    ,'Policy = TL-MaxSize=4','Policy = PVM-MaxSize=4','Policy = PDM-MaxSize=4');
 xlabel('Traffic Level (Vehicle/Hour/Lane)');
 ylabel('Average Delay (S)');
 grid minor
 
 figure
-plot(trafficFlows,capacities(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+for plt=1:12
+plot(trafficFlows,capacities(plt,:),'color','k','marker','d','lineStyle','-','lineWidth',1);
 hold on
-plot(trafficFlows,capacities(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
+end
+% plot(trafficFlows,capacities(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+% hold on
+% plot(trafficFlows,capacities(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
 
-legend('Policy = TL','Policy = PAIM');
+legend('Policy = TL-MaxSize=1','Policy = PVM-MaxSize=1','Policy = PDM-MaxSize=1'...
+    ,'Policy = TL-MaxSize=2','Policy = PVM-MaxSize=2','Policy = PDM-MaxSize=2'...
+    ,'Policy = TL-MaxSize=3','Policy = PVM-MaxSize=3','Policy = PDM-MaxSize=3'...
+    ,'Policy = TL-MaxSize=4','Policy = PVM-MaxSize=4','Policy = PDM-MaxSize=4');
 xlabel('Traffic Level (Vehicle/Hour/Lane)');
 ylabel('Intersection Capacity (Vehicle/Hour)');
 grid minor
+
+
+% figure
+% plot(trafficFlows,fcpv(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+% hold on
+% plot(trafficFlows,fcpv(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
+% 
+% legend('Policy = TL','Policy = PAIM');
+% xlabel('Traffic Level (Vehicle/Hour/Lane)');
+% ylabel('Fuel Consumption Per Vehicle (ml)');
+% grid minor
 
 save('capacities.mat','capacities');
 save('trafficFlows.mat','trafficFlows');
 save('ave_delays.mat','AverageDelayPerVehicle');
 save('variances.mat','var');
+save('fcpv.mat','fcpv');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Plotting Variance

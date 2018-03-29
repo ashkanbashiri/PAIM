@@ -307,7 +307,7 @@ classdef vehiclePlatoon < handle
                             %fprintf('kpw = %.2f',ttt);
                             %[v, omega] = step(obj.controllers{1,i}, obj.vehicles(i).CurrentPose);
                             %[px py pv pa] = driveLeader(obj.vehicles(i),v,omega,dt,draw,obj.color);
-                            if(sqrt(sum((obj.leader.CurrentPose(1:2) - obj.path(1,:)) .^ 2))<10 || obj.letgo==1)
+                            if(sqrt(sum((obj.leader.CurrentPose(1:2) - obj.path(1,:)) .^ 2))<8 || obj.letgo==1)
                                 tmp = obj.linearVelocity;
                                 obj.linearVelocity = tmp+0;
                                 obj.letgo=1;

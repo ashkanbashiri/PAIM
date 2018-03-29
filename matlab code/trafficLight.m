@@ -5,12 +5,12 @@ if(makeVideo==0)
     F=[];
 end
 global phaseTimes;
-phaseTimes = [30 15 15 30 15 15 5];
+phaseTimes = [20 10 10 20 10 10 5];
 global phaseTurns;
 phaseTurns = [1 2 7 8;1 2 3 10;4 7 8 9;4 5 10 11;1 4 5 6;7 10 11 12;13 13 13 13];
 
 global currentPhase;
-currentPhase = 1;
+currentPhase = 3;
 offset = [-10 0 0;0 -10 0;10 0 0;0 10 0];
 offset_offset = [-10 0 0;0 -10 0;10 0 0;0 10 0];
 rng(seed);
@@ -173,7 +173,7 @@ while(frameCounter<duration*fps)
     set(handles.timeLabel,'String',formattedTime);
     set(handles.crossedVehicles,'String',sprintf('%d',sum(totalVehiclesCrossed)));
     set(handles.intersectionFlow,'String',sprintf('%.0f',sum(totalVehiclesCrossed)*3600/secondsPassed));
-    if(mod(frameCounter,1)==0)%Spawn 4 platoons every 100 frames
+    if(mod(frameCounter,10)==0)%Spawn 4 platoons every 100 frames
         for k=1:4
             %Spawn New Platoons
             %decide lane
@@ -308,24 +308,24 @@ while(frameCounter<duration*fps)
             end
             candidates = candidates(candidates~=0);
             if(~isempty(candidates))
-                if(length(candidates)~=length(lastCandidates))
+%                 if(length(candidates)~=length(lastCandidates))
                     newSchedule = tlSchedule(candidates);
                     callCounter = callCounter+1;
                     newBatch = 0;
                     numOfPlatoonsInSchedule = length(newSchedule);
                     index = 1;
-                elseif(candidates~=lastCandidates)
-                    newSchedule = tlSchedule(candidates);
-                    callCounter = callCounter+1;
-                    newBatch = 0;
-                    numOfPlatoonsInSchedule = length(newSchedule);
-                    index = 1;
-                else
-                    newSchedule = tlSchedule(candidates);
-                    newBatch = 0;
-                    numOfPlatoonsInSchedule = length(newSchedule);
-                    index = 1;
-                end
+%                 elseif(candidates~=lastCandidates)
+%                     newSchedule = tlSchedule(candidates);
+%                     callCounter = callCounter+1;
+%                     newBatch = 0;
+%                     numOfPlatoonsInSchedule = length(newSchedule);
+%                     index = 1;
+%                 else
+%                     newSchedule = tlSchedule(candidates);
+%                     newBatch = 0;
+%                     numOfPlatoonsInSchedule = length(newSchedule);
+%                     index = 1;
+%                 end
                 
             else
                 newSchedule = 0;
@@ -338,7 +338,7 @@ while(frameCounter<duration*fps)
         simultaneous = 0;
         for j=sortedList
             simultaneous = 0;
-            if(index>0 && index <=numOfPlatoonsInSchedule && coplatooning==0)
+            if(index>0 && index <=length(newSchedule) && coplatooning==0)
                 whosTurn = newSchedule(index);
                 %             if(sum(find(coplatoons==whosTurn))~=0)
                 %                 whosTurn = 0;
@@ -348,12 +348,14 @@ while(frameCounter<duration*fps)
             end
             %&& ~strcmp(platoons(j).state,'done')
             if(isvalid(platoons(j)) )
+              
                 if(strcmp(platoons(j).state,'done'))
                     gone = [gone j];
                     continue;
                 end
                 timePassed = frameCounter-lastFrame;
                 %timePassed>=clearTime && 
+                %whosTurn
                 if(timePassed>=clearTime &&j==whosTurn ...
                         && platoons(j).reachedCollisionZone==1)
                     index = index + 1;
@@ -405,7 +407,7 @@ while(frameCounter<duration*fps)
                             
                             platoons(temp).setPath(intersectionData.getTrajectory(platoons(temp).arrivalLane,platoons(temp).turn),frameCounter);
                             arrival = platoons(temp).arrivalTime;
-                            totalVehiclesCrossed(platoons(temp).arrivalLane) = totalVehiclesCrossed(platoons(temp).arrivalLane) + platoons(temp).platoonSize;                %counter = counter + 1;
+                            %totalVehiclesCrossed(platoons(temp).arrivalLane) = totalVehiclesCrossed(platoons(temp).arrivalLane) + platoons(temp).platoonSize;                %counter = counter + 1;
                             clearTime = max(clearTime, arrival + (25+(platoons(temp).platoonSize*6))/(15*simulationTime));
                             lastFrame = frameCounter;
                             laneTraffic(platoons(temp).arrivalLane) = laneTraffic(platoons(temp).arrivalLane) -platoons(temp).platoonSize;
@@ -421,12 +423,12 @@ while(frameCounter<duration*fps)
                             %                                 platoons(ii).updateStopPoint(platoons(temp).stopPoints(platoons(temp).arrivalLane,:),platoons(temp).arrivalLane);
                             %                             end
                             drive(platoons(temp),simulationTime,frameCounter,true);
-                            %                             if(strcmp(platoons(temp).state,'stopandwait')...
-                            %                                     || strcmp(platoons(temp).state,'moveandwait'))
-                            %                                 for ii= sortedList(find(sortedList==temp,1)+1:end)
-                            %                                     platoons(ii).updateStopPoint(platoons(temp).tail(),platoons(temp).arrivalLane);
-                            %                                 end
-                            %                             end
+                                                        if(strcmp(platoons(temp).state,'stopandwait')...
+                                                                || strcmp(platoons(temp).state,'moveandwait'))
+                                                            for ii= sortedList(find(sortedList==temp,1)+1:end)
+                                                                platoons(ii).updateStopPoint(platoons(temp).tail(),platoons(temp).arrivalLane);
+                                                            end
+                                                        end
                             %                             if(platoons(temp).finishedCrossing==1)
                             %                                 for ii= sortedList(find(sortedList==temp,1)+1:end)
                             %                                     platoons(ii).updateStopPoint(platoons(temp).stopPoints(platoons(temp).arrivalLane,:),platoons(temp).arrivalLane);
@@ -564,6 +566,7 @@ var = sum(delays.^2)/(length(delays)-1) - (length(delays))*mean(delays)^2/(lengt
                 else
                     leftout = [leftout candidates(i)];
                 end
+            else
                 leftout = [leftout candidates(i)];
             end
             
