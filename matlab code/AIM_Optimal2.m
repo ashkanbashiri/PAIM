@@ -1,6 +1,6 @@
 function [fuelConsumptionPerVehicle,F,callCounter,packets,var,AverageDelayPerVehicle,AverageDelayPerPlatoon,totalVehicles,totalVehiclesCrossed] = AIM_Optimal2(policyName,ver,seed,granularity,platoonMaxSize,spawnRate,duration,simSpeed,handles)
 tic;
-makeVideo=0;
+makeVideo=1;
 if(makeVideo==0)
     F=[];
 end
@@ -149,22 +149,22 @@ while(frameCounter<duration*fps)
             turnRand = rand();
             if(k==1 || k==3)
                 %Major Road:50% go straight, 25% turn left, 25% turn Right
-                if(turnRand<0.5)
+                if(turnRand<0.7)
                     turnDecision = turns{1};%Go Straight
-                elseif(turnRand>=0.5 && turnRand<0.6)
-                    turnDecision = turns{2};%Turn Left
-                else
+                elseif(turnRand>=0.7 && turnRand<.9)
                     turnDecision = turns{3};%Turn Right
+                else
+                    turnDecision = turns{2};%Turn Left
                 end
                 
             else
                 %Minor Road: 20% go straight, 40% turn left, 40% turn Right
-                if(turnRand<0.50)
+                if(turnRand<0.7)
                     turnDecision = turns{1};%Go Straight
-                elseif(turnRand>=0.5 && turnRand<0.6)
-                    turnDecision = turns{2};%Turn Left
-                else
+                elseif(turnRand>=0.7 && turnRand<.9)
                     turnDecision = turns{3};%Turn Right
+                else
+                    turnDecision = turns{2};%Turn Left
                 end
             end
             %turnDecision = turns{randi([1 3])};
@@ -229,19 +229,37 @@ while(frameCounter<duration*fps)
         end
         continue;
     else
+        gg=0;
         for j=indices
-            
+            if(~strcmp(platoons(j).state,'done'))
             if (j==1)
                 waitings = [1 platoons(j).distanceToCZ platoons(j).arrivalTime];
                 %arrivals = [1 platoons(j).arrivalTime];
+                gg= gg+1;
             else
                 waitings = [waitings; j platoons(j).distanceToCZ platoons(j).arrivalTime];
                 %lengths = [lengths; j platoons(j).platoonSize];
+                                gg= gg+1;
+
+            end
+            else
+                %fprintf('%d is done\n',j);
             end
         end
-        
+        if(gg>0)
         schedule2 = sortrows(waitings,[2]);%sort on  platoon number
         sortedList = [schedule2(:,1)'];
+        else
+            drawnow;
+        frameCounter = frameCounter+1;
+        lastFrame = frameCounter;
+        if(makeVideo)
+        F(frameCounter) = getframe(gcf);
+        else
+        getframe(gcf);
+        end
+        continue;
+        end
         
         %temp code
         %sortedList = 1:length
@@ -502,6 +520,7 @@ for j=1:length(platoons)
         delete(platoons(j));
     end
 end
+clear platoons
 fuelConsumptionPerVehicle = fuelConsumption/doneVehicles;
 fuelConsumptionPerPlatoon = fuelConsumption/donePlatoons;
 delays = delays;

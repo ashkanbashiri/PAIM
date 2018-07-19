@@ -69,6 +69,7 @@ classdef vehicleModel < handle
         
         %CurrentPose Current pose of the robot
         CurrentPose;
+        drawVehicle = 1;
         vel = 5;%initial velocity
         acc = 0;%initial acceleration
         role = 'leader';
@@ -229,15 +230,19 @@ classdef vehicleModel < handle
                         hold(ax, 'on');
                         [x, y] = obj.getVehicleBody(obj.CurrentPose, obj.HeadingVectorLength);
                         % Draw robot
+                        if(obj.drawVehicle==1)
                         obj.HRobot = plot(x,y, obj.color, 'Parent', ax);
+                        end
                         % Draw heading vector
                         [xVec, yVec] = obj.computeHeadingVector(obj.CurrentPose, obj.HeadingVectorLength);
+                        if(obj.drawVehicle==1)
                         obj.HRobotHeading = plot(ax, xVec, yVec, 'k', 'LineWidth', 3);
                         % Draw robot trail
                         %obj.HRobotTrail = plot(ax, robotCurrentLocation(1),  robotCurrentLocation(2), 'LineWidth', 2);
                         
                         hold(ax, 'off');
                         obj.drawn = 1;
+                        end
                     end
                     updatePlots(obj);
                 end
@@ -264,13 +269,17 @@ classdef vehicleModel < handle
             
             %obj.Trajectory = obj.CurrentPose;
             if(currentPose(1)>=20 && currentPose(1)<=380 && currentPose(2)>=20 && currentPose(2)<=380)
+                if(obj.drawVehicle==1)
                 ax = gca;
                 hold(ax, 'on');
+                end
                 
                 [x, y] = obj.getVehicleBody(obj.CurrentPose, obj.HeadingVectorLength);
                 % Draw robot
                 obj.myState.pose = [x y 0];
+                if(obj.drawVehicle==1)
                 obj.HRobot = plot(x,y, obj.color, 'Parent', ax);
+                end
                 
                 if(obj.mynumber==1 && obj.seeInfo==1)
                 %obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%.0fml',obj.fuelConsumed),'FontSize',8,'FontWeight','bold');
@@ -280,13 +289,16 @@ classdef vehicleModel < handle
                 
                 % Draw heading vector
                 [xVec, yVec] = obj.computeHeadingVector(obj.CurrentPose, obj.HeadingVectorLength);
+                if(obj.drawVehicle==1)
                 obj.HRobotHeading = plot(ax, xVec, yVec, 'k', 'LineWidth', 3);
+                
                 
                 % Draw robot trail
                 %obj.HRobotTrail = plot(ax, robotCurrentLocation(1),  robotCurrentLocation(2), 'LineWidth', 2);
                 
                 hold(ax, 'off');
                 obj.drawn = 1;
+                end
             else
                 obj.drawn = 0;
             end
@@ -319,16 +331,21 @@ classdef vehicleModel < handle
                     hold(ax, 'on');
                     [x, y] = obj.getVehicleBody(obj.CurrentPose, obj.HeadingVectorLength);
                     % Draw robot
-                    
+                                    if(obj.drawVehicle==1)
+
                     obj.HRobot = plot(x,y, obj.color, 'Parent', ax);
+                                    end
                     % Draw heading vector
                     [xVec, yVec] = obj.computeHeadingVector(obj.CurrentPose, obj.HeadingVectorLength);
+                                    if(obj.drawVehicle==1)
+
                     obj.HRobotHeading = plot(ax, xVec, yVec, 'k', 'LineWidth', 3);
                     % Draw robot trail
                     %obj.HRobotTrail = plot(ax, robotCurrentLocation(1),  robotCurrentLocation(2), 'LineWidth', 2);
                     
                     hold(ax, 'off');
                     obj.drawn = 1;
+                                    end
                 end
                 updatePlots(obj);
             end
@@ -461,7 +478,9 @@ classdef vehicleModel < handle
                 v = obj.vel + obj.acc*dt;
                 
                 v = max(v,0);
-                obj.fuelConsumed = obj.fuelConsumed + fuelConsumption(v,obj.acc)*dt;%update fuel consumed
+                if(~(strcmp(obj.status,'crossing')|| strcmp(obj.status,'done')))
+                obj.fuelConsumed = obj.fuelConsumed + fuelConsumption(v,obj.acc)*dt;
+                end%update fuel consumed
                 %v=1.1;
                 %w=0;
                 
@@ -487,15 +506,21 @@ classdef vehicleModel < handle
                         hold(ax, 'on');
                         [x, y] = obj.getVehicleBody(obj.CurrentPose, obj.HeadingVectorLength);
                         % Draw robot
+                                        if(obj.drawVehicle==1)
+
                         obj.HRobot = plot(x,y, obj.color, 'Parent', ax);
+                                        end
                         % Draw heading vector
                         [xVec, yVec] = obj.computeHeadingVector(obj.CurrentPose, obj.HeadingVectorLength);
+                                        if(obj.drawVehicle==1)
+
                         obj.HRobotHeading = plot(ax, xVec, yVec, 'k', 'LineWidth', 3);
                         % Draw robot trail
                         %obj.HRobotTrail = plot(ax, robotCurrentLocation(1),  robotCurrentLocation(2), 'LineWidth', 2);
                         
                         hold(ax, 'off');
                         obj.drawn = 1;
+                                        end
                     end
                     updatePlots(obj);
                 end
@@ -575,15 +600,21 @@ classdef vehicleModel < handle
                         hold(ax, 'on');
                         [x, y] = obj.getVehicleBody(obj.CurrentPose, obj.HeadingVectorLength);
                         % Draw robot
+                                        if(obj.drawVehicle==1)
+
                         obj.HRobot = plot(x,y, obj.color, 'Parent', ax);
+                                        end
                         % Draw heading vector
                         [xVec, yVec] = obj.computeHeadingVector(obj.CurrentPose, obj.HeadingVectorLength);
+                                        if(obj.drawVehicle==1)
+
                         obj.HRobotHeading = plot(ax, xVec, yVec, 'k', 'LineWidth', 3);
                         % Draw robot trail
                         %obj.HRobotTrail = plot(ax, robotCurrentLocation(1),  robotCurrentLocation(2), 'LineWidth', 2);
                         
                         hold(ax, 'off');
                         obj.drawn = 1;
+                                        end
                     end
                     updatePlots(obj);
                 end
@@ -609,9 +640,12 @@ classdef vehicleModel < handle
             function updateRobotCurrentLocation(obj)
                 %updateRobotCurrentLocation Update the X/YData for robot plot
                 [robotXData, robotYData] = obj.getVehicleBody(obj.CurrentPose, obj.HeadingVectorLength);
+                                if(obj.drawVehicle==1)
+
                 obj.HRobot.Color = obj.color;
                 obj.HRobot.XData =  robotXData;
                 obj.HRobot.YData =  robotYData;
+                                end
                 if(obj.mynumber==1 && obj.seeInfo ==1)
                 delete(obj.showNumber);
                 %obj.showNumber = text(obj.CurrentPose(1)+5*cos(obj.CurrentPose(3)+pi/2),obj.CurrentPose(2)+5*sin(obj.CurrentPose(3)+pi/2),sprintf('%.0fml',obj.fuelConsumed),'FontSize',8,'FontWeight','bold');

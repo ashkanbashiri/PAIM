@@ -10,7 +10,7 @@ global phaseTurns;
 phaseTurns = [1 2 7 8;1 2 3 10;4 7 8 9;4 5 10 11;1 4 5 6;7 10 11 12;13 13 13 13];
 
 global currentPhase;
-currentPhase = 3;
+currentPhase = 2;
 offset = [-10 0 0;0 -10 0;10 0 0;0 10 0];
 offset_offset = [-10 0 0;0 -10 0;10 0 0;0 10 0];
 rng(seed);
@@ -160,6 +160,12 @@ while(frameCounter<duration*fps)
             if(currentPhase>6)
                  currentPhase = 1;
             end
+            if(currentPhase==1)
+                currentPhase=2;
+            end
+            if(currentPhase==4)
+                currentPhase=5;
+            end
             yellowLight=0;
         end
     else
@@ -182,22 +188,22 @@ while(frameCounter<duration*fps)
             turnRand = rand();
             if(k==1 || k==3)
                 %Major Road:50% go straight, 25% turn left, 25% turn Right
-                if(turnRand<0.5)
+                if(turnRand<0.7)
                     turnDecision = turns{1};%Go Straight
-                elseif(turnRand>=0.5 && turnRand<0.7)
-                    turnDecision = turns{2};%Turn Left
-                else
+                elseif(turnRand>=0.7 && turnRand<0.9)
                     turnDecision = turns{3};%Turn Right
+                else
+                    turnDecision = turns{2};%Turn Left
                 end
                 
             else
                 %Minor Road: 20% go straight, 40% turn left, 40% turn Right
-                if(turnRand<0.50)
+                if(turnRand<0.7)
                     turnDecision = turns{1};%Go Straight
-                elseif(turnRand>=0.5 && turnRand<0.7)
-                    turnDecision = turns{2};%Turn Left
-                else
+                elseif(turnRand>=0.7 && turnRand<0.9)
                     turnDecision = turns{3};%Turn Right
+                else
+                    turnDecision = turns{2};%Turn Left
                 end
             end
             %turnDecision = turns{randi([1 3])};
@@ -263,13 +269,14 @@ while(frameCounter<duration*fps)
         continue;
     else
         for j=indices
-            
+            if(~strcmp(platoons(j).state,'done'))
             if (j==1)
                 waitings = [1 platoons(j).distanceToCZ platoons(j).arrivalTime];
                 %arrivals = [1 platoons(j).arrivalTime];
             else
                 waitings = [waitings; j platoons(j).distanceToCZ platoons(j).arrivalTime];
                 %lengths = [lengths; j platoons(j).platoonSize];
+            end
             end
         end
         
@@ -356,7 +363,8 @@ while(frameCounter<duration*fps)
                 timePassed = frameCounter-lastFrame;
                 %timePassed>=clearTime && 
                 %whosTurn
-                if(timePassed>=clearTime &&j==whosTurn ...
+                %timePassed>=clearTime &&
+                if(timePassed>=clearTime && j==whosTurn ...
                         && platoons(j).reachedCollisionZone==1)
                     index = index + 1;
                     if(index>numOfPlatoonsInSchedule)
@@ -481,7 +489,7 @@ while(frameCounter<duration*fps)
                 headOfLines(ll,:) = platoons(lastPlatoon(ll)).head();
             end
         end
-        %drawnow;
+        drawnow;
         if(simultaneous==1)
             pause(5);
         end
@@ -531,8 +539,11 @@ for j=1:length(platoons)
             end
         end
         delete(platoons(j));
+        
     end
+    
 end
+clear platoons
 fuelConsumptionPerVehicle = fuelConsumption/doneVehicles;
 fuelConsumptionPerPlatoon = fuelConsumption/donePlatoons;
 delays = delays;

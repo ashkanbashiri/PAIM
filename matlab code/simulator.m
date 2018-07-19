@@ -591,6 +591,7 @@ totalVehiclesCrossed = 0;
 trafficFlows = [];
 counter=0;
 seed = 154;
+seed = 0;
 callCounter=[];
 %for kk =1:6
 %   seed = 1233+kk;
@@ -599,11 +600,11 @@ ver=2;
 capacities = [];
 fcpv=zeros(3,3);
 expCounter = 0;
-trafficFlows = [300 900 1500];
+trafficFlows = [500 600 700 800];
 
-for maxSize=1:4
+for maxSize=1:5
     counter=0;
-    for j = [300 900 1500]%low, medium and high traffic flow
+    for j = [500 600 700 800]%low, medium and high traffic flow
         %seed = seed + 1;
         %expCounter = expCounter+1;
         %trafficFlows = [trafficFlows j];
@@ -616,9 +617,10 @@ for maxSize=1:4
         fprintf("TrafficLight Lane Traffic in %d seconds = [%d,%d,%d,%d]\n",handles.simTime,tvc);
         tv_sum = sum(tv);
         tvc_sum = sum(tvc);
-        capacities(expCounter+1,counter) = tvc_sum*3600/handles.simTime;
+        capacities(expCounter+1,counter) = tvc_sum*3600/(handles.simTime);
         fprintf("Capacity = %.0fveh/h\n",capacities(expCounter+1,counter));
-        fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+1,counter));
+        fprintf("FCPV = %.0fml/v",fcpv(expCounter+1,counter));
+        %fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+1,counter));
         fprintf("AverageDelayPerVehicle = %.0fs\n",vDelay);
         cla
         [fcpv(expCounter+2,counter),F,callCounter(expCounter+2,counter),p,var(expCounter+2,counter),vDelay,pDelay,tv,tvc] = AIM_Optimal2('pvm',2,seed,g,maxSize,j,handles.simTime,handles.simSpeed,handles);
@@ -630,7 +632,8 @@ for maxSize=1:4
         tvc_sum = sum(tvc);
         capacities(expCounter+2,counter) = tvc_sum*3600/handles.simTime;
         fprintf("Capacity = %.0fveh/h\n",capacities(expCounter+2,counter));
-        fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+2,counter));
+        fprintf("FCPV = %.0fml/v",fcpv(expCounter+2,counter));
+        %fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+2,counter));
         fprintf("AverageDelayPerVehicle = %.0fs\n",vDelay);
         
         cla
@@ -643,7 +646,8 @@ for maxSize=1:4
         tvc_sum = sum(tvc);
         capacities(expCounter+3,counter) = tvc_sum*3600/handles.simTime;
         fprintf("Capacity = %.0fveh/h\n",capacities(expCounter+3,counter));
-        fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+3,counter));
+        fprintf("FCPV = %.0fml/v",fcpv(expCounter+3,counter));
+        %fprintf("FuelConsumptionPerVehicle = %.0fml\n",fcpv(expCounter+3,counter));
         fprintf("AverageDelayPerVehicle = %.0fs\n",vDelay);
         
         cla
@@ -651,60 +655,60 @@ for maxSize=1:4
     end
         expCounter = expCounter+3;
 end
-figure
-for plt=1:12
-plot(trafficFlows,AverageDelayPerVehicle(plt,:),'color','k','marker','d','lineStyle','-','lineWidth',1);
-hold on
-end
-% plot(trafficFlows,AverageDelayPerVehicle(2,:),'color','k','marker','o','lineStyle','-','lineWidth',1);
-% hold on
-% plot(trafficFlows,AverageDelayPerVehicle(3,:),'color','r','marker','d','lineStyle','-','lineWidth',1);
-% hold on
-% plot(trafficFlows,AverageDelayPerVehicle(4,:),'color','r','marker','o','lineStyle','-','lineWidth',1);
-% hold on
-% plot(trafficFlows,AverageDelayPerVehicle(5,:),'color','c','marker','d','lineStyle','-','lineWidth',1);
-% hold on
-% plot(trafficFlows,AverageDelayPerVehicle(6,:),'color','c','marker','o','lineStyle','-','lineWidth',1);
-% hold on
-% plot(trafficFlows,AverageDelayPerVehicle(7,:),'color','g','marker','d','lineStyle','-','lineWidth',1);
-% hold on
-% plot(trafficFlows,AverageDelayPerVehicle(8,:),'color','g','marker','o','lineStyle','-','lineWidth',1);
-
-legend('Policy = TL-MaxSize=1','Policy = PVM-MaxSize=1','Policy = PDM-MaxSize=1'...
-    ,'Policy = TL-MaxSize=2','Policy = PVM-MaxSize=2','Policy = PDM-MaxSize=2'...
-    ,'Policy = TL-MaxSize=3','Policy = PVM-MaxSize=3','Policy = PDM-MaxSize=3'...
-    ,'Policy = TL-MaxSize=4','Policy = PVM-MaxSize=4','Policy = PDM-MaxSize=4');
-xlabel('Traffic Level (Vehicle/Hour/Lane)');
-ylabel('Average Delay (S)');
-grid minor
-
-figure
-for plt=1:12
-plot(trafficFlows,capacities(plt,:),'color','k','marker','d','lineStyle','-','lineWidth',1);
-hold on
-end
-% plot(trafficFlows,capacities(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
-% hold on
-% plot(trafficFlows,capacities(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
-
-legend('Policy = TL-MaxSize=1','Policy = PVM-MaxSize=1','Policy = PDM-MaxSize=1'...
-    ,'Policy = TL-MaxSize=2','Policy = PVM-MaxSize=2','Policy = PDM-MaxSize=2'...
-    ,'Policy = TL-MaxSize=3','Policy = PVM-MaxSize=3','Policy = PDM-MaxSize=3'...
-    ,'Policy = TL-MaxSize=4','Policy = PVM-MaxSize=4','Policy = PDM-MaxSize=4');
-xlabel('Traffic Level (Vehicle/Hour/Lane)');
-ylabel('Intersection Capacity (Vehicle/Hour)');
-grid minor
-
-
 % figure
-% plot(trafficFlows,fcpv(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+% for plt=1:12
+% plot(trafficFlows,AverageDelayPerVehicle(plt,:),'color','k','marker','d','lineStyle','-','lineWidth',1);
 % hold on
-% plot(trafficFlows,fcpv(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
+% end
+% % plot(trafficFlows,AverageDelayPerVehicle(2,:),'color','k','marker','o','lineStyle','-','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,AverageDelayPerVehicle(3,:),'color','r','marker','d','lineStyle','-','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,AverageDelayPerVehicle(4,:),'color','r','marker','o','lineStyle','-','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,AverageDelayPerVehicle(5,:),'color','c','marker','d','lineStyle','-','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,AverageDelayPerVehicle(6,:),'color','c','marker','o','lineStyle','-','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,AverageDelayPerVehicle(7,:),'color','g','marker','d','lineStyle','-','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,AverageDelayPerVehicle(8,:),'color','g','marker','o','lineStyle','-','lineWidth',1);
 % 
-% legend('Policy = TL','Policy = PAIM');
+% % legend('Policy = TL-MaxSize=1','Policy = PVM-MaxSize=1','Policy = PDM-MaxSize=1'...
+% %     ,'Policy = TL-MaxSize=2','Policy = PVM-MaxSize=2','Policy = PDM-MaxSize=2'...
+% %     ,'Policy = TL-MaxSize=3','Policy = PVM-MaxSize=3','Policy = PDM-MaxSize=3'...
+% %     ,'Policy = TL-MaxSize=4','Policy = PVM-MaxSize=4','Policy = PDM-MaxSize=4');
 % xlabel('Traffic Level (Vehicle/Hour/Lane)');
-% ylabel('Fuel Consumption Per Vehicle (ml)');
+% ylabel('Average Delay (S)');
 % grid minor
+% 
+% figure
+% for plt=1:12
+% plot(trafficFlows,capacities(plt,:),'color','k','marker','d','lineStyle','-','lineWidth',1);
+% hold on
+% end
+% % plot(trafficFlows,capacities(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,capacities(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
+% 
+% % legend('Policy = TL-MaxSize=1','Policy = PVM-MaxSize=1','Policy = PDM-MaxSize=1'...
+% %     ,'Policy = TL-MaxSize=2','Policy = PVM-MaxSize=2','Policy = PDM-MaxSize=2'...
+% %     ,'Policy = TL-MaxSize=3','Policy = PVM-MaxSize=3','Policy = PDM-MaxSize=3'...
+% %     ,'Policy = TL-MaxSize=4','Policy = PVM-MaxSize=4','Policy = PDM-MaxSize=4');
+% xlabel('Traffic Level (Vehicle/Hour/Lane)');
+% ylabel('Intersection Capacity (Vehicle/Hour)');
+% grid minor
+% 
+% 
+% % figure
+% % plot(trafficFlows,fcpv(1,:),'color','k','marker','d','lineStyle','--','lineWidth',1);
+% % hold on
+% % plot(trafficFlows,fcpv(2,:),'color','r','marker','d','lineStyle','--','lineWidth',1);
+% % 
+% % legend('Policy = TL','Policy = PAIM');
+% % xlabel('Traffic Level (Vehicle/Hour/Lane)');
+% % ylabel('Fuel Consumption Per Vehicle (ml)');
+% % grid minor
 
 save('capacities.mat','capacities');
 save('trafficFlows.mat','trafficFlows');
